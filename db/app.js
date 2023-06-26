@@ -16,8 +16,6 @@ app.get("/api/topics", getAllTopics);
 
 
 //Error handle
-app.use(handlePsqlErrors);
-app.use(handleCustomErrors);
 app.use(handleServerErrors);
 
 
