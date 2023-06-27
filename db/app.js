@@ -9,7 +9,7 @@ app.use(express.json());
 const {handlePsqlErrors,handleCustomErrors,handleServerErrors} = require('../db/error')
 
 //require controllers
-const {getAllTopics} = require('../db/controller/app.controller');
+const {getAllTopics,getArticleByArticleId} = require('../db/controller/app.controller');
 
 //Task 2 Get All topics
 app.get("/api/topics", getAllTopics);
@@ -19,10 +19,14 @@ app.get('/api',(req,res) => {
     res.status(200).send(endpointsData)
 })
 
+//GET /api/articles/:article_id
+app.get('/api/articles/:article_id',getArticleByArticleId)
 
 
 
 //Error handle
+app.use(handlePsqlErrors);
+app.use(handleCustomErrors);
 app.use(handleServerErrors);
 
 

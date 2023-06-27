@@ -1,4 +1,4 @@
-const {selectAllTopics} = require('../model/app.model')
+const {selectAllTopics,selectArticleByArticleId } = require('../model/app.model')
 
 //Task 2 Get All topics
 exports.getAllTopics = (req, res,next) => {
@@ -8,3 +8,12 @@ exports.getAllTopics = (req, res,next) => {
    .catch(next);
 };
 
+//GET /api/articles/:article_id
+exports.getArticleByArticleId = (req,res,next) => {
+   const article_id  = req.params.article_id;
+   selectArticleByArticleId (article_id)
+   .then ((article) => {
+      res.status(200).send({article:article})
+   })
+   .catch (next);
+}
