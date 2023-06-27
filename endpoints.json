@@ -11,19 +11,134 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all topics",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "queries": ["sort_by","order"],
     "exampleResponse": {
       "articles": [
         {
           "title": "Seafood substitutions are increasing",
           "topic": "cooking",
           "author": "weegembump",
-          "body": "Text from the article..",
           "created_at": "2018-05-30T15:59:13.341Z",
           "votes": 0,
           "comment_count": 6
         }
       ]
     }
+  },
+  "GET /api/articles (queries)": {
+    "description": "Allows articles to be filtered and sorted.if the query is omitted,the endpoint should respond with all articles",
+    "queries": ["topic", "sort_by", "order"],
+    "exampleResponse": {
+      "articles": [
+        {
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "votes": 0,
+          "comment_count": 6
+        }
+      ]
+    }
+  },
+
+  "GET /api/articles:article_id": {
+    "description": "Responds with a single article by article_id",
+    "queries": ["article_id"],
+    "exampleResponse": {
+      "articles": [
+        {
+          "author": "weegembump",
+          "title": "Seafood substitutions are increasing",
+          "article_id":"1",
+          "body": "Text from the article..",
+          "topic": "cooking",    
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "votes": 0,
+          "article_img_url": "url from the article.."
+        }
+      ]
+    }
+  },
+
+  "GET /api/articles:article_id(comment_count)": {
+    "description": "Responds with a single article by article_id",
+    "queries": ["article_id"],
+    "exampleResponse": {
+      "articles": [
+        {
+          "author": "weegembump",
+          "title": "Seafood substitutions are increasing",
+          "article_id":"1",
+          "body": "Text from the article..",
+          "topic": "cooking",    
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "votes": 0,
+          "article_img_url": "url from the article..",
+          "comment_count":6
+        }
+      ]
+    }
+  },
+
+  "GET /api/articles/:article_id/comments": {
+    "description": "Responds with a list of comments by article_id",
+    "queries": ["article_id"],
+    "exampleResponse": {
+      "articles": [
+        {
+          "comment_id":2,
+          "votes": 0,
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "article_id":"1"
+          }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "Add a comment by article_id",
+    "queries": ["article_id"],
+    "body":{"username":" butter_bridge","body":"Good"},
+    "exampleResponse": {"comment":"Good"}
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "Updates an article by article_id",
+    "queries": ["article_id"],
+    "body":{"inc_votes": 2},
+    "exampleResponse": {
+      "articles": [
+        {
+          "author": "weegembump",
+          "title": "Seafood substitutions are increasing",
+          "article_id":"1",
+          "body": "Text from the article..",
+          "topic": "cooking",    
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "votes": 2,
+          "article_img_url": "url from the article.."
+        }
+      ]
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "Delete a comment by comment_id",
+    "queries": ["comment_id"],
+    "exampleResponse": {"status":204,"msg":"no content"}
+  },
+  "GET /api/users": {
+    "description": "Responds with a list of users",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "tickle122",
+          "name": "Tom Tickle",
+          "avatar_url": "url from the users.."
+        }
+      ]
+    }
   }
+
 }
