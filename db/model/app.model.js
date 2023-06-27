@@ -1,4 +1,5 @@
 const db = require('../connection');
+const fs = require('fs/promises')
 
 //Task 2 Get All topics
 exports.selectAllTopics = () => {
@@ -9,3 +10,4 @@ exports.selectAllTopics = () => {
         return rows;
     })
 }
+
