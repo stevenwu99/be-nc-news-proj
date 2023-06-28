@@ -1,4 +1,18 @@
 const db = require('../connection');
+const format = require('pg-format');
+
+
+//Check exists
+exports.checkExists = (tableName,colName,colValue) => {
+    const queryStr = format ('SELECT * FROM %I WHERE %I = $1;',tableName,colName)
+    return db
+    .query(queryStr,[colValue])
+    .then(({rows}) => {
+        if (!rows.length) {
+            return Promise.reject({status:404,msg:'Not found'})
+        }
+    });
+}
 
 //Task 2 Get All topics
 exports.selectAllTopics = () => {
@@ -42,11 +56,6 @@ exports.selectCommentsByArticleId = (article_id) => {
     return db
     .query(selectSQLStr,[article_id])
     .then(({rows}) => {
-          if (rows.length === 0) {
-           return Promise.reject({status:404,msg:'Not found'})
-         }
          return rows
     })
-
-
-  }
+}
