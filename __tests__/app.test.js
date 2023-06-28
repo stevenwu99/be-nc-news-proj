@@ -132,6 +132,25 @@ describe ('GET /api/articles/:article_id/comments',() => {
     })
   })
   
+  test ('200:should return empty array if article_id found in article ,but not comment for this article',() => {
+    return request(app)
+    .get('/api/articles/1/comments')
+    .expect(200)
+    .then (({body}) => {
+        const {comments} = body;
+        expect(comments).toBeSortedBy("created_at",{descending: true,});
+        comments.forEach((comment) => {
+          expect(comment).toHaveProperty("comment_id", expect.any(Number));
+          expect(comment).toHaveProperty("votes", expect.any(Number));   
+          expect(comment).toHaveProperty("created_at");    
+          expect(comment).toHaveProperty("author", expect.any(String));
+          expect(comment).toHaveProperty("body", expect.any(String));
+          expect(comment).toHaveProperty("article_id", expect.any(Number));
+        })
+    })
+  })
+
+  
   test ("404:should return  an error respond when article_id is valid,but does not exist", () => {
     return request(app)
         .get("/api/articles/9999/comments")

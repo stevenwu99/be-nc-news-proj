@@ -38,7 +38,7 @@ exports.selectAllArticles = () => {
 
 //Task 6 GET /api/articles/:article_id/comments
 exports.selectCommentsByArticleId = (article_id) => {
-    const selectSQLStr = "SELECT * FROM comments WHERE comments.article_id = $1 ORDER BY comments.created_at DESC ;";
+    const selectSQLStr = "SELECT * FROM comments WHERE comments.article_id = $1 ORDER BY comments.created_at DESC ;";  
     return db
     .query(selectSQLStr,[article_id])
     .then(({rows}) => {
@@ -47,4 +47,6 @@ exports.selectCommentsByArticleId = (article_id) => {
          }
          return rows
     })
+
+
   }
