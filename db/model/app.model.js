@@ -25,9 +25,9 @@ exports.selectArticleByArticleId = (article_id) => {
 
 //Task 5 CORE: GET /api/articles
 exports.selectAllArticles = () => {
-    const selectSQLStr = "SELECT a.author,a.title,a.article_id, a.topic,a.created_at,a.votes,a.article_img_url, " +
-                         "(SELECT count(b.article_id)::int FROM comments b WHERE b.article_id = a.article_id) AS comment_count " + 
-                         "FROM articles a "+
+    const selectSQLStr = "SELECT a.author,a.title,a.article_id, a.topic,a.created_at,a.votes,a.article_img_url, count(c.article_id) ::int AS comment_count " +
+                         "FROM articles a inner join comments c ON a.article_id = c.article_id " + 
+                         "GROUP BY a.article_id " +
                          "ORDER BY a.created_at DESC ;";
     return db
     .query(selectSQLStr)
@@ -35,3 +35,16 @@ exports.selectAllArticles = () => {
         return rows;
     })
 }
+
+//Task 6 GET /api/articles/:article_id/comments
+exports.selectCommentsByArticleId = (article_id) => {
+    const selectSQLStr = "SELECT * FROM comments WHERE comments.article_id = $1 ORDER BY comments.created_at DESC ;";
+    return db
+    .query(selectSQLStr,[article_id])
+    .then(({rows}) => {
+          if (rows.length === 0) {
+           return Promise.reject({status:404,msg:'Not found'})
+         }
+         return rows
+    })
+  }
