@@ -1,6 +1,6 @@
 const request = require('supertest');
 const format = require('pg-format');
-
+require('jest-sorted');
 const app = require('../db/app');
 const db = require('../db/connection');
 const seed = require('../db/seeds/seed');
@@ -47,7 +47,7 @@ beforeEach(() => {
 
 })
 
-//GET /api/articles/:article_id
+//Task 4 GET /api/articles/:article_id
 describe ('GET /api/articles/:article_id',() => {
     test ('200:should return a single article by article_id',() => {
     return request(app)
@@ -55,16 +55,14 @@ describe ('GET /api/articles/:article_id',() => {
     .expect(200)
     .then (({body}) => {
         const {article} = body;
-
-        expect(article).toHaveLength(1);
-        expect(article[0]).toHaveProperty("author", expect.any(String));
-        expect(article[0]).toHaveProperty("title", expect.any(String));
-        expect(article[0]).toHaveProperty("article_id", expect.any(Number));
-        expect(article[0]).toHaveProperty("body", expect.any(String));
-        expect(article[0]).toHaveProperty("topic", expect.any(String));  
-        expect(article[0]).toHaveProperty("created_at");    
-        expect(article[0]).toHaveProperty("votes", expect.any(Number));   
-        expect(article[0]).toHaveProperty("article_img_url", expect.any(String));   
+        expect(article).toHaveProperty("author", expect.any(String));
+        expect(article).toHaveProperty("title", expect.any(String));
+        expect(article).toHaveProperty("article_id", expect.any(Number));
+        expect(article).toHaveProperty("body", expect.any(String));
+        expect(article).toHaveProperty("topic", expect.any(String));  
+        expect(article).toHaveProperty("created_at");    
+        expect(article).toHaveProperty("votes", expect.any(Number));   
+        expect(article).toHaveProperty("article_img_url", expect.any(String));   
     })
   })
 
@@ -88,3 +86,27 @@ describe ('GET /api/articles/:article_id',() => {
 
 
 })
+
+ //Task 5 CORE: GET /api/articles
+ describe ('GET /api/articles', () => {
+    test ('200:responses with all articles ', () => { 
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({body}) => {
+              const {articles} = body;  
+               expect(articles).toHaveLength(13);
+               expect(articles).toBeSorted("created_at");
+               articles.forEach((article) => {
+                expect(article).toHaveProperty("author", expect.any(String));
+                expect(article).toHaveProperty("title", expect.any(String));
+                expect(article).toHaveProperty("article_id", expect.any(Number));
+                expect(article).toHaveProperty("topic", expect.any(String));  
+                expect(article).toHaveProperty("created_at");    
+                expect(article).toHaveProperty("votes", expect.any(Number));   
+                expect(article).toHaveProperty("article_img_url", expect.any(String));
+                expect(article).toHaveProperty("comment_count", expect.any(Number));
+            })        
+        })
+      }); 
+  })
