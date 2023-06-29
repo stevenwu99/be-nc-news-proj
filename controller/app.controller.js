@@ -48,14 +48,21 @@ exports.getCommentsByArticleId = (req,res,next) => {
 exports.addComment = (req,res,next) => {
    const article_id = req.params.article_id
    const newComment = req.body;
-   const promises = [AddCommentByArticleId(article_id,newComment)];
-   if (article_id ) {
-       promises.push(checkExists('articles','article_id',article_id));
+
+    if (!newComment.username || !newComment.body) {
+      return Promise.reject({status:422,msg:'Unprocessable Entity'})
+      .catch(next)
    }
-   Promise.all(promises)
-   .then ((resolvedPromises) => {
-      const comments = resolvedPromises[0]
-      res.status(201).send({comments:comments[0]})
-   })
-   .catch (next);
+
+   checkExists('articles','article_id',article_id)
+   .catch(next);
+
+   checkExists('users','username',newComment.username)
+   .catch(next);
+  
+  AddCommentByArticleId(article_id,newComment).then((comment) => {  
+   res.status(201).send({comment:comment[0]}) 
+  })
+  .catch(next);
+
 }
