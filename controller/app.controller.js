@@ -1,4 +1,4 @@
-const {selectAllTopics,selectArticleByArticleId,selectAllArticles,selectCommentsByArticleId, checkExists} = require('../model/app.model')
+const {selectAllTopics,selectArticleByArticleId,selectAllArticles,selectCommentsByArticleId, checkExists,AddCommentByArticleId} = require('../model/app.model')
 
 //Task 2 Get All topics
 exports.getAllTopics = (req, res,next) => {
@@ -44,3 +44,25 @@ exports.getCommentsByArticleId = (req,res,next) => {
    .catch (next);
  }
 
+//Task 7 POST /api/articles/:article_id/comments
+exports.addComment = (req,res,next) => {
+   const article_id = req.params.article_id
+   const newComment = req.body;
+
+    if (!newComment.username || !newComment.body) {
+      return Promise.reject({status:422,msg:'Unprocessable Entity'})
+      .catch(next)
+   }
+
+   checkExists('articles','article_id',article_id)
+   .catch(next);
+
+   checkExists('users','username',newComment.username)
+   .catch(next);
+  
+  AddCommentByArticleId(article_id,newComment).then((comment) => {  
+   res.status(201).send({comment:comment[0]}) 
+  })
+  .catch(next);
+
+}

@@ -133,7 +133,7 @@ describe ('GET /api/articles/:article_id/comments',() => {
     })
   })
   
-  test.only ('200:should return empty array if article_id found in article ,but not comment for this article',() => {
+  test ('200:should return empty array if article_id found in article ,but not comment for this article',() => {
     return request(app)
     .get('/api/articles/2/comments')
     .expect(200)
@@ -161,4 +161,96 @@ describe ('GET /api/articles/:article_id/comments',() => {
         });
     });
   
+});
+
+//Task 7 POST /api/articles/:article_id/comments
+describe ('POST /api/articles/:article_id/comments',() => {
+    test ('201:should return a new comment when add a new comment by user', () => {
+        const newComment = {username:'butter_bridge',body:'Very Good'};
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(newComment)
+        .expect(201)
+        .then (({body}) => {
+            const {comment} = body;
+            expect(comment).toHaveProperty("comment_id", expect.any(Number));
+            expect(comment).toHaveProperty("votes", 0);   
+            expect(comment).toHaveProperty("created_at",);   
+            expect(comment.created_at).not.toBeNull();
+            expect(comment).toHaveProperty("author", "butter_bridge");
+            expect(comment).toHaveProperty("body", "Very Good");
+            expect(comment).toHaveProperty("article_id",1);
+        })
+    });
+    test ('201:should return a new comment when add a new comment with extra property by user', () => {
+        const newComment = {username:'butter_bridge',body:'I like it',fruit:'apple'};
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(newComment)
+        .expect(201)
+        .then (({body}) => {
+            const {comment} = body;
+            expect(comment).toHaveProperty("comment_id", expect.any(Number));
+            expect(comment).toHaveProperty("votes", 0);   
+            expect(comment).toHaveProperty("created_at",);   
+            expect(comment.created_at).not.toBeNull();
+            expect(comment).toHaveProperty("author", "butter_bridge");
+            expect(comment).toHaveProperty("body", "I like it");
+            expect(comment).toHaveProperty("article_id",1);
+        })
+    });
+
+    test ("404:should return  an error respond when article_id is valid,but does not exist", () => {
+        const newComment = {username:'butter_bridge',body:'Very Good'}; 
+        return request(app)
+            .post("/api/articles/9999/comments")
+            .send(newComment)
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Not found");
+            });
+       });
+
+    test ("400: should return an error if invalid article_id", () => {
+        const newComment = {username:'butter_bridge',body:'Very Good'};
+        return request(app)
+            .post("/api/articles/nonsense/comments")
+            .send(newComment)
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Bad request");
+            });
+    });
+    test ("404:should return  an error respond when username does not exist", () => {
+        const newComment = {username:'Tommy',body:'Very Good'}; 
+        return request(app)
+            .post("/api/articles/1/comments")
+            .send(newComment)
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Not found");
+            });
+       });
+
+       test ("422:should return an error respond when missing username property", () => {
+        const newComment = {body:'Very Good'}; 
+        return request(app)
+            .post("/api/articles/1/comments")
+            .send(newComment)
+            .expect(422)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Unprocessable Entity");
+            });
+       });
+       test ("422:should return an error respond when missing body property", () => {
+        const newComment = {username:'Tommy'}; 
+        return request(app)
+            .post("/api/articles/1/comments")
+            .send(newComment)
+            .expect(422)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Unprocessable Entity");
+            });
+       });
 })
+

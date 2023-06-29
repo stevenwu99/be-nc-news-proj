@@ -59,3 +59,14 @@ exports.selectCommentsByArticleId = (article_id) => {
          return rows
     })
 }
+
+//Task 7 POST /api/articles/:article_id/comments
+exports.AddCommentByArticleId = (article_id,newComment) => {
+    const {username,body} = newComment;
+    const insertSQLStr = "INSERT INTO comments (article_id,author,body) VALUES ($1,$2,$3) RETURNING *;"
+    return db
+    .query(insertSQLStr,[article_id,username,body])
+    .then(({rows}) => {
+        return rows;
+    })
+}
