@@ -1,4 +1,4 @@
-const {selectAllTopics,selectArticleByArticleId,selectAllArticles,selectCommentsByArticleId, checkExists} = require('../model/app.model')
+const {selectAllTopics,selectArticleByArticleId,selectAllArticles,selectCommentsByArticleId, checkExists,AddCommentByArticleId} = require('../model/app.model')
 
 //Task 2 Get All topics
 exports.getAllTopics = (req, res,next) => {
@@ -44,3 +44,18 @@ exports.getCommentsByArticleId = (req,res,next) => {
    .catch (next);
  }
 
+//Task 7 POST /api/articles/:article_id/comments
+exports.addComment = (req,res,next) => {
+   const article_id = req.params.article_id
+   const newComment = req.body;
+   const promises = [AddCommentByArticleId(article_id,newComment)];
+   if (article_id ) {
+       promises.push(checkExists('articles','article_id',article_id));
+   }
+   Promise.all(promises)
+   .then ((resolvedPromises) => {
+      const comments = resolvedPromises[0]
+      res.status(201).send({comments:comments[0]})
+   })
+   .catch (next);
+}
