@@ -95,8 +95,8 @@ describe ('GET /api/articles/:article_id',() => {
         .expect(200)
         .then(({body}) => {
               const {articles} = body;  
-               expect(articles).toHaveLength(13);
-               expect(articles).toBeSorted("created_at");
+               expect(articles).toHaveLength(5);
+               expect(articles).toBeSortedBy("created_at",{descending: true,});
                articles.forEach((article) => {
                 expect(article).toHaveProperty("author", expect.any(String));
                 expect(article).toHaveProperty("title", expect.any(String));
@@ -106,7 +106,59 @@ describe ('GET /api/articles/:article_id',() => {
                 expect(article).toHaveProperty("votes", expect.any(Number));   
                 expect(article).toHaveProperty("article_img_url", expect.any(String));
                 expect(article).toHaveProperty("comment_count", expect.any(Number));
+                expect(article).not.toHaveProperty("body"); 
             })        
         })
       }); 
   })
+
+  //Task 6 GET /api/articles/:article_id/comments
+describe ('GET /api/articles/:article_id/comments',() => {
+    test ('200:should return comments by article_id',() => {
+    return request(app)
+    .get('/api/articles/1/comments')
+    .expect(200)
+    .then (({body}) => {
+          const {comments} = body;
+          expect(comments).toBeSortedBy("created_at",{descending: true,});
+          expect(comments).toHaveLength(11);
+          comments.forEach((comment) => {
+          expect(comment).toHaveProperty("comment_id", expect.any(Number));
+          expect(comment).toHaveProperty("votes", expect.any(Number));   
+          expect(comment).toHaveProperty("created_at");    
+          expect(comment).toHaveProperty("author", expect.any(String));
+          expect(comment).toHaveProperty("body", expect.any(String));
+          expect(comment).toHaveProperty("article_id", expect.any(Number));
+        })
+    })
+  })
+  
+  test.only ('200:should return empty array if article_id found in article ,but not comment for this article',() => {
+    return request(app)
+    .get('/api/articles/2/comments')
+    .expect(200)
+    .then (({body}) => {
+        const {comments} = body;
+        expect(comments).toHaveLength(0); 
+    })
+  })
+
+  test ("404:should return  an error respond when article_id is valid,but does not exist", () => {
+    return request(app)
+        .get("/api/articles/9999/comments")
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Not found");
+        });
+   });
+  
+   test ("400: should return an error if invalid article_id", () => {
+    return request(app)
+        .get("/api/articles/nonsense/comments")
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Bad request");
+        });
+    });
+  
+})
