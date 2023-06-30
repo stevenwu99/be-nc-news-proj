@@ -358,4 +358,29 @@ describe ('PATCH /api/articles/:article_id',() => {
     });
 })
 
+//Task 9 DELETE /api/comments/:comment_id
+describe ("DELETE /api/comments/:comment_id", () => {
+	test("204: should delete comment by comment_id", () => {
+	return request(app)
+      .delete("/api/comments/18")
+      .expect(204)
+  	});
 
+    test ("404:should return an error respond when comment_id is valid,but does not exist", () => {
+        return request(app)
+            .delete("/api/comments/9999")
+             .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Not found");
+            });
+    });
+    
+    test ("400: should return an error if invalid comment_id", () => {
+        return request(app)
+            .delete("/api/comments/nonsense")
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Bad request");
+            });
+    });
+});
