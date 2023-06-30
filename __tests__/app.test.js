@@ -403,3 +403,124 @@ describe ("DELETE /api/comments/:comment_id", () => {
         })
       }); 
   });
+
+  //Task 11 CORE: GET /api/articles
+  // Refer to Line 90 test (Task 5), if not specified topic for filtering ,should return all the articles an its default sort_by and order
+  describe ('GET /api/articles', () => {
+    // filters by topic with default sort_by and order 
+    test ('200:responses articles filters by the topic,default sort by date and order by desc', () => { 
+        return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({body}) => {
+              const {articles} = body;  
+               expect(articles).toHaveLength(4);
+               expect(articles).toBeSortedBy("created_at",{descending: true,});
+               articles.forEach((article) => {
+                expect(article).toHaveProperty("author", expect.any(String));
+                expect(article).toHaveProperty("title", expect.any(String));
+                expect(article).toHaveProperty("article_id", expect.any(Number));
+                expect(article).toHaveProperty("topic", 'mitch');  
+                expect(article).toHaveProperty("created_at");    
+                expect(article).toHaveProperty("votes", expect.any(Number));   
+                expect(article).toHaveProperty("article_img_url", expect.any(String));
+                expect(article).toHaveProperty("comment_count", expect.any(Number));
+                expect(article).not.toHaveProperty("body"); 
+            })        
+        })
+      }); 
+      test ("404:should return an error respond when topic is valid,but does not exist", () => {
+         return request(app)
+            .get("/api/articles?topic=notexist")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Not found");
+            });
+       });
+
+      // Check default sort by date and specified ASC order
+      test ('200:accepts a sort_by query with default sorts by created_at  and ASC order)',() => {
+        return request(app)
+        .get("/api/articles?order=ASC")
+        .expect(200)
+        .then(({body}) =>{
+         const {articles} = body;
+         expect(articles).toHaveLength(5);
+         expect(articles).toBeSortedBy("created_at",{ascending: true,});
+        })
+       })
+
+    // Sort_by any valid column and specified order   
+    test ('200:accepts a sort_by query with sorts by article_id and DESC order)',() => {
+        return request(app)
+        .get("/api/articles?sort_by=article_id&order=DESC")
+        .expect(200)
+        .then(({body}) =>{
+         const {articles} = body;
+         expect(articles).toHaveLength(5);
+         expect(articles).toBeSortedBy("article_id",{descending: true,});
+        })
+   })
+   test ('200:accepts a sort_by query with sorts by title and ASC order)',() => {
+    return request(app)
+    .get("/api/articles?sort_by=title&order=ASC")
+    .expect(200)
+    .then(({body}) =>{
+     const {articles} = body;
+     expect(articles).toHaveLength(5);
+     expect(articles).toBeSortedBy("title",{ascending: true,});
+    })
+   })
+    test ('200:accepts a sort_by query with sorts by author and ASC order)',() => {
+        return request(app)
+        .get("/api/articles?sort_by=author&order=ASC")
+        .expect(200)
+        .then(({body}) =>{
+         const {articles} = body;
+         expect(articles).toHaveLength(5);
+         expect(articles).toBeSortedBy("author",{ascending: true,});
+        })
+   })
+
+   test ('200:accepts a sort_by query with sorts by votes and default order)',() => {
+    return request(app)
+    .get("/api/articles?sort_by=votes")
+    .expect(200)
+    .then(({body}) =>{
+     const {articles} = body;
+     expect(articles).toHaveLength(5);
+     expect(articles).toBeSortedBy("votes",{descending: true,});
+    })
+   })
+   
+   test ('200:accepts a sort_by query with sorts by article_img_url and ASC order)',() => {
+    return request(app)
+     .get("/api/articles?sort_by=article_img_url&order=ASC")
+     .expect(200)
+     .then(({body}) =>{
+     const {articles} = body;
+     expect(articles).toHaveLength(5);
+     expect(articles).toBeSortedBy("article_img_url",{ascending: true,});
+    })
+})
+
+ 
+     // Validate the sort_by to prevent SQL INJECTION
+     test ('400:responds with bad request for an invalid sort_by',() => {
+          return request(app)
+         .get('/api/articles?sort_by=apple')
+         .expect(400)
+         .then(({body}) => {
+         expect(body.msg).toBe("Bad request");
+          })
+    })
+   // Validate the order to prevent SQL INJECTION
+      test ('400:responds with bad request for an invalid order',() => {
+        return request(app)
+        .get("/api/articles?topic=mitch&order=ABC")
+        .expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe("Bad request");
+        })
+      });
+  })

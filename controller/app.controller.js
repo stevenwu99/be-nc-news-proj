@@ -19,10 +19,24 @@ exports.getArticleByArticleId = (req,res,next) => {
    .catch (next);
 }
 
+//Task 5 and Task 11 CORE: GET /api/articles
+/* 
+Task 5 and the Task 11 is same endpoint.
+So modified the Task 5 controller function to match the Task 11
+(1)Access the query and pass to its model
+(2)If filtered the articles by the topic value, check the topic exist or not 
+(3)Add the promise,if the topic not exist return custom error 404 and message
+*/
 
-//Task 5 CORE: GET /api/articles
 exports.getAllArticles = (req,res,next) => {
-   selectAllArticles().then((articles) => {  
+   const {sort_by,order,topic} = req.query;    
+   const promises = [selectAllArticles(sort_by,order,topic)];
+
+   if (topic) {
+      promises.push(checkExists('articles','topic',topic));
+   }
+   Promise.all(promises).then((resolvedPromises) => {   
+      const articles = resolvedPromises[0]
       res.status(200).send({articles});    
    })
    .catch(next);  
@@ -100,3 +114,5 @@ exports.getAllUsers = (req, res,next) => {
    })
    .catch(next);
 };
+
+ //Task 11  CORE: GET /api/articles, the endpoint is same as Task 5

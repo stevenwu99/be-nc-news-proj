@@ -37,17 +37,48 @@ exports.selectArticleByArticleId = (article_id) => {
     })
 }
 
-//Task 5 CORE: GET /api/articles
-exports.selectAllArticles = () => {
-    const selectSQLStr = "SELECT a.author,a.title,a.article_id, a.topic,a.created_at,a.votes,a.article_img_url, count(c.article_id) ::int AS comment_count " +
-                         "FROM articles a inner join comments c ON a.article_id = c.article_id " + 
-                         "GROUP BY a.article_id " +
-                         "ORDER BY a.created_at DESC ;";
+//Task 5 and Task 11 CORE: GET /api/articles
+/*
+Task 5 and the Task 11 is same endpoint.
+So modified the Task 5 model function to match the Task 11
+(1)Accept the parameters and with its default value,keep the original test for Task 5 work as well
+(2)Valid the sort_by and order checking to avoid the SQL injection and return an error respond
+(3) According the sort_by and order and its value to decide which SQL should be sent to database.
+    -- sort by which column
+    -- if without sort_by value, use its default sort_by
+    -- if without specified order, user its default order
+    -- if not specified topic for filtering, should return all the articles. this will match the Task 5 requirement and its 
+        original test work
+*/
+exports.selectAllArticles = (sort_by = 'created_at',order = 'DESC',topic) => {
+    const validSortBy = ['article_id','title','topic','author','created_at','votes','article_img_url'];
+    const validSortOrder = ['ASC','DESC'];
+    const queryValues = [];
+  
+    if (!validSortBy.includes(sort_by)) {
+        return Promise.reject({status:400,msg:"Bad request"});
+    };
+
+    if (!validSortOrder.includes(order)) {
+        return Promise.reject({status:400,msg:"Bad request"});
+    };  
+
+    let selectSQLStr = "SELECT a.author,a.title,a.article_id, a.topic,a.created_at,a.votes,a.article_img_url, count(c.article_id) ::int AS comment_count " +
+                        "FROM articles a inner join comments c ON a.article_id = c.article_id ";
+                        
+    if (topic) {
+        selectSQLStr += ' WHERE a.topic = $1 ';
+        queryValues.push(topic);
+    }
+  
+    selectSQLStr +=  "GROUP BY a.article_id " ;
+    selectSQLStr += `ORDER By a.${sort_by} ${order} `;
+         
     return db
-    .query(selectSQLStr)
-    .then(({rows}) => { 
-        return rows;
-    })
+        .query(selectSQLStr,queryValues)
+        .then(({rows}) => {
+            return rows;
+        })
 }
 
 //Task 6 GET /api/articles/:article_id/comments
