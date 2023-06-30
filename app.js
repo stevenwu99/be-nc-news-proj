@@ -9,7 +9,8 @@ app.use(express.json());
 const {handlePsqlErrors,handleCustomErrors,handleServerErrors} = require('./error')
 
 //require controllers
-const {getAllTopics,getArticleByArticleId,getAllArticles,getCommentsByArticleId,addComment,updateArticle,deleteComment} = require('./controller/app.controller');
+const {getAllTopics,getArticleByArticleId,getAllArticles,getCommentsByArticleId,addComment,
+    updateArticle,deleteComment,getAllUsers} = require('./controller/app.controller');
 
 //Task 2 Get All topics
 app.get("/api/topics", getAllTopics);
@@ -36,6 +37,9 @@ app.patch ("/api/articles/:article_id",updateArticle);
 
 //Task 9 DELETE /api/comments/:comment_id
 app.delete('/api/comments/:comment_id',deleteComment);
+
+ //Task 10 CORE: GET /api/users
+ app.get("/api/users", getAllUsers);
 
 
 //Error handle
