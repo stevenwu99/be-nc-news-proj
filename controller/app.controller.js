@@ -1,4 +1,4 @@
-const {selectAllTopics,selectArticleByArticleId,selectAllArticles,selectCommentsByArticleId, checkExists,AddCommentByArticleId} = require('../model/app.model')
+const {selectAllTopics,selectArticleByArticleId,selectAllArticles,selectCommentsByArticleId, checkExists,AddCommentByArticleId,updateArticleById } = require('../model/app.model')
 
 //Task 2 Get All topics
 exports.getAllTopics = (req, res,next) => {
@@ -24,8 +24,7 @@ exports.getAllArticles = (req,res,next) => {
    selectAllArticles().then((articles) => {  
       res.status(200).send({articles});    
    })
-   .catch(next);
-    
+   .catch(next);  
 }
 
 //Task 6 GET /api/articles/:article_id/comments
@@ -66,3 +65,20 @@ exports.addComment = (req,res,next) => {
   .catch(next);
 
 }
+
+//Task 8 PATCH /api/articles/:article_id
+exports.updateArticle = (req,res,next) => {
+   const article_id  = req.params.article_id;
+   
+   if (!req.body.inc_votes) {
+      return Promise.reject({status:422,msg:'Unprocessable Entity'})
+      .catch(next)
+   }
+   const votes = req.body.inc_votes;
+   updateArticleById(article_id,votes)
+   .then ((article) => {
+      res.status(201).send({article:article[0]})
+   })
+   .catch (next);
+}
+
