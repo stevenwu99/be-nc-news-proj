@@ -96,3 +96,13 @@ exports.deleteCommentById = (comment_id) => {
          return rows
     })
  } 
+
+ //Task 10 CORE: GET /api/users
+exports.selectAllUsers = () => {
+    const selectSQLStr = "SELECT * FROM users;";
+    return db
+    .query(selectSQLStr)
+    .then(({rows}) => {
+        return rows;
+    })
+}

@@ -99,6 +99,19 @@
     "description": "Delete a comment by comment_id",
     "queries": ["comment_id"],
     "exampleResponse": {"status":204}
+  },
+  "GET /api/users": {
+    "description": "Responds with a list of users",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "tickle122",
+          "name": "Tom Tickle",
+          "avatar_url": "url from the users.."
+        }
+      ]
+    }
   }
- 
+
 }
