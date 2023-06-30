@@ -9,7 +9,7 @@ app.use(express.json());
 const {handlePsqlErrors,handleCustomErrors,handleServerErrors} = require('./error')
 
 //require controllers
-const {getAllTopics,getArticleByArticleId,getAllArticles,getCommentsByArticleId,addComment} = require('./controller/app.controller');
+const {getAllTopics,getArticleByArticleId,getAllArticles,getCommentsByArticleId,addComment,updateArticle} = require('./controller/app.controller');
 
 //Task 2 Get All topics
 app.get("/api/topics", getAllTopics);
@@ -30,6 +30,10 @@ app.get('/api/articles/:article_id/comments',getCommentsByArticleId)
 
 //Task 7 POST /api/articles/:article_id/comments
 app.post("/api/articles/:article_id/comments",addComment);
+
+//Task 8 PATCH /api/articles/:article_id
+app.patch ("/api/articles/:article_id",updateArticle);
+
 
 
 

@@ -254,3 +254,108 @@ describe ('POST /api/articles/:article_id/comments',() => {
        });
 })
 
+//Task 8 PATCH /api/articles/:article_id
+describe ('PATCH /api/articles/:article_id',() => {
+    test ('200:should return a update article with correct vote when passed a positive vote number', () => {
+        const  newVote = {inc_votes:1};
+        return request(app)
+        .patch('/api/articles/1')
+        .send(newVote)
+        .expect(200)
+        .then (({body}) => {
+            const {article} = body;
+            expect(article).toHaveProperty("author", expect.any(String));
+            expect(article).toHaveProperty("title", expect.any(String));
+            expect(article).toHaveProperty("article_id", expect.any(Number));
+            expect(article).toHaveProperty("body", expect.any(String));
+            expect(article).toHaveProperty("topic", expect.any(String));  
+            expect(article).toHaveProperty("created_at");    
+            expect(article).toHaveProperty("votes", 101);   
+            expect(article).toHaveProperty("article_img_url", expect.any(String));   
+        })
+    });
+
+    test ('200:should return a update article with correct vote when passed a negative vote number', () => {
+        const  newVote = {inc_votes:-100};
+        return request(app)
+        .patch('/api/articles/1')
+        .send(newVote)
+        .expect(200)
+        .then (({body}) => {
+            const {article} = body;
+            expect(article).toHaveProperty("author", expect.any(String));
+            expect(article).toHaveProperty("title", expect.any(String));
+            expect(article).toHaveProperty("article_id", expect.any(Number));
+            expect(article).toHaveProperty("body", expect.any(String));
+            expect(article).toHaveProperty("topic", expect.any(String));  
+            expect(article).toHaveProperty("created_at");    
+            expect(article).toHaveProperty("votes", 0);   
+            expect(article).toHaveProperty("article_img_url", expect.any(String));   
+        })
+    });
+
+    test ('200:should return a update article with correct vote when passed a vote number with extra property', () => {
+        const  newVote = {inc_votes:-100,username:"Tom"};
+        return request(app)
+        .patch('/api/articles/1')
+        .send(newVote)
+        .expect(200)
+        .then (({body}) => {
+            const {article} = body;
+            expect(article).toHaveProperty("author", expect.any(String));
+            expect(article).toHaveProperty("title", expect.any(String));
+            expect(article).toHaveProperty("article_id", expect.any(Number));
+            expect(article).toHaveProperty("body", expect.any(String));
+            expect(article).toHaveProperty("topic", expect.any(String));  
+            expect(article).toHaveProperty("created_at");    
+            expect(article).toHaveProperty("votes", 0);   
+            expect(article).toHaveProperty("article_img_url", expect.any(String));   
+        })
+    });
+
+    test ("400: should return an error when passed a invalid votes data type", () => {
+        const  newVote = {inc_votes:'abc'};
+        return request(app)
+        .patch('/api/articles/1')
+        .send(newVote)
+        .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Bad request");
+            });
+    });
+
+    test ("422:should return an error respond when missing inc_votes property", () => {
+        const  newVote = {inc_vote:12};
+        return request(app)
+             .patch('/api/articles/1')
+             .send(newVote)
+            .expect(422)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Unprocessable Entity");
+            });
+       });
+
+    test ("404:should return an error respond when article_id is valid,but does not exist", () => {
+        const  newVote = {inc_votes:12};
+        return request(app)
+            .patch("/api/articles/9999")
+            .send(newVote)
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Not found");
+            });
+       });
+
+    test ("400: should return an error if invalid article_id", () => {
+        const  newVote = {inc_votes:12};
+        return request(app)
+            .patch("/api/articles/nonsense")
+            .send(newVote)
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Bad request");
+            });
+    });
+})
+
+
