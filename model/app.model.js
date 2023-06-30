@@ -84,4 +84,15 @@ exports.updateArticleById = (article_id,votes) => {
     })
  } 
 
- 
+ //Task 9 DELETE /api/comments/:comment_id
+exports.deleteCommentById = (comment_id) => {
+    const deleteSQLStr = "DELETE FROM comments WHERE comment_id = $1 RETURNING *; ";
+    return db
+    .query(deleteSQLStr,[comment_id])
+    .then(({rows}) => {
+          if (rows.length === 0) {
+           return Promise.reject({status:404,msg:'Not found'})
+         }
+         return rows
+    })
+ } 

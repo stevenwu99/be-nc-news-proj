@@ -1,4 +1,4 @@
-const {selectAllTopics,selectArticleByArticleId,selectAllArticles,selectCommentsByArticleId, checkExists,AddCommentByArticleId,updateArticleById } = require('../model/app.model')
+const {selectAllTopics,selectArticleByArticleId,selectAllArticles,selectCommentsByArticleId, checkExists,AddCommentByArticleId,updateArticleById,deleteCommentById } = require('../model/app.model')
 
 //Task 2 Get All topics
 exports.getAllTopics = (req, res,next) => {
@@ -82,3 +82,12 @@ exports.updateArticle = (req,res,next) => {
    .catch (next);
 }
 
+//Task 9 DELETE /api/comments/:comment_id
+exports.deleteComment = (req,res,next) => {
+   const comment_id  = req.params.comment_id;
+    deleteCommentById(comment_id)
+   .then ((comment) => {
+      res.status(204).send();
+   })
+   .catch (next);
+}
