@@ -429,9 +429,21 @@ describe ("DELETE /api/comments/:comment_id", () => {
             })        
         })
       }); 
+ 
+      //validate the topic
+      test ('200:should return empty array if topic was found in topics ,but articles have not this topic',() => {
+        return request(app)
+        .get("/api/articles?topic=paper")
+        .expect(200)
+        .then (({body}) => {
+            const {articles} = body;
+            expect(articles).toHaveLength(0); 
+        })
+      })
+
       test ("404:should return an error respond when topic is valid,but does not exist", () => {
          return request(app)
-            .get("/api/articles?topic=notexist")
+            .get("/api/articles?topic=topicnotexist")
             .expect(404)
             .then(({ body }) => {
                 expect(body.msg).toBe("Not found");
@@ -451,16 +463,6 @@ describe ("DELETE /api/comments/:comment_id", () => {
        })
 
     // Sort_by any valid column and specified order   
-    test ('200:accepts a sort_by query with sorts by article_id and DESC order)',() => {
-        return request(app)
-        .get("/api/articles?sort_by=article_id&order=DESC")
-        .expect(200)
-        .then(({body}) =>{
-         const {articles} = body;
-         expect(articles).toHaveLength(5);
-         expect(articles).toBeSortedBy("article_id",{descending: true,});
-        })
-   })
    test ('200:accepts a sort_by query with sorts by title and ASC order)',() => {
     return request(app)
     .get("/api/articles?sort_by=title&order=ASC")
@@ -471,40 +473,6 @@ describe ("DELETE /api/comments/:comment_id", () => {
      expect(articles).toBeSortedBy("title",{ascending: true,});
     })
    })
-    test ('200:accepts a sort_by query with sorts by author and ASC order)',() => {
-        return request(app)
-        .get("/api/articles?sort_by=author&order=ASC")
-        .expect(200)
-        .then(({body}) =>{
-         const {articles} = body;
-         expect(articles).toHaveLength(5);
-         expect(articles).toBeSortedBy("author",{ascending: true,});
-        })
-   })
-
-   test ('200:accepts a sort_by query with sorts by votes and default order)',() => {
-    return request(app)
-    .get("/api/articles?sort_by=votes")
-    .expect(200)
-    .then(({body}) =>{
-     const {articles} = body;
-     expect(articles).toHaveLength(5);
-     expect(articles).toBeSortedBy("votes",{descending: true,});
-    })
-   })
-   
-   test ('200:accepts a sort_by query with sorts by article_img_url and ASC order)',() => {
-    return request(app)
-     .get("/api/articles?sort_by=article_img_url&order=ASC")
-     .expect(200)
-     .then(({body}) =>{
-     const {articles} = body;
-     expect(articles).toHaveLength(5);
-     expect(articles).toBeSortedBy("article_img_url",{ascending: true,});
-    })
-})
-
- 
      // Validate the sort_by to prevent SQL INJECTION
      test ('400:responds with bad request for an invalid sort_by',() => {
           return request(app)

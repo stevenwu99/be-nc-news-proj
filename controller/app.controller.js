@@ -33,7 +33,7 @@ exports.getAllArticles = (req,res,next) => {
    const promises = [selectAllArticles(sort_by,order,topic)];
 
    if (topic) {
-      promises.push(checkExists('articles','topic',topic));
+      promises.push(checkExists('topics','slug',topic));
    }
    Promise.all(promises).then((resolvedPromises) => {   
       const articles = resolvedPromises[0]
