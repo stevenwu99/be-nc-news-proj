@@ -48,10 +48,6 @@ beforeEach(() => {
 })
 
 //Task 4 GET /api/articles/:article_id
-/*
-(1)Task 12 and the Task 11 are  same endpoint.
-(2) Add the comment_count checking from Task 12
-*/
 describe ('GET /api/articles/:article_id',() => {
     test ('200:should return a single article by article_id',() => {
     return request(app)
@@ -66,8 +62,7 @@ describe ('GET /api/articles/:article_id',() => {
         expect(article).toHaveProperty("topic", expect.any(String));  
         expect(article).toHaveProperty("created_at");    
         expect(article).toHaveProperty("votes", expect.any(Number));   
-        expect(article).toHaveProperty("article_img_url", expect.any(String)); 
-        expect(article).toHaveProperty("comment_count", expect.any(Number));   
+        expect(article).toHaveProperty("article_img_url", expect.any(String));  
     })
   })
 
@@ -497,3 +492,43 @@ describe ("DELETE /api/comments/:comment_id", () => {
         })
       });
   })
+//Task 12  GET /api/articles/:article_id (comment_count)
+describe ('GET /api/articles/:article_id',() => {
+    test ('200:should return a single article by article_id',() => {
+    return request(app)
+    .get('/api/articles/1')
+    .expect(200)
+    .then (({body}) => {
+        const {article} = body;
+        expect(article).toHaveProperty("author", expect.any(String));
+        expect(article).toHaveProperty("title", expect.any(String));
+        expect(article).toHaveProperty("article_id", expect.any(Number));
+        expect(article).toHaveProperty("body", expect.any(String));
+        expect(article).toHaveProperty("topic", expect.any(String));  
+        expect(article).toHaveProperty("created_at");    
+        expect(article).toHaveProperty("votes", expect.any(Number));   
+        expect(article).toHaveProperty("article_img_url", expect.any(String)); 
+        expect(article).toHaveProperty("comment_count", expect.any(Number));   
+    })
+  })
+
+  test ("404:should return  an error respond when article_id is valid,but does not exist", () => {
+    return request(app)
+        .get("/api/articles/9999")
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Not found");
+        });
+   });
+
+   test ("400: should return an error if invalid article_id", () => {
+    return request(app)
+        .get("/api/articles/nonsense")
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Bad request");
+        });
+    });
+
+
+})
