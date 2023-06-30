@@ -23,7 +23,7 @@ app.get('/api',(req,res) => {
 //Task 4 GET /api/articles/:article_id
 app.get('/api/articles/:article_id',getArticleByArticleId)
 
-//Task 5 CORE: GET /api/articles
+//Task 5 and Task 11 CORE: GET /api/articles
 app.get('/api/articles',getAllArticles)
 
 //Task 6 GET /api/articles/:article_id/comments
@@ -40,6 +40,8 @@ app.delete('/api/comments/:comment_id',deleteComment);
 
  //Task 10 CORE: GET /api/users
  app.get("/api/users", getAllUsers);
+
+ //Task 11  CORE: GET /api/articles, the endpoint is same as Task 5
 
 
 //Error handle
