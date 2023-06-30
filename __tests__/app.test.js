@@ -48,6 +48,10 @@ beforeEach(() => {
 })
 
 //Task 4 GET /api/articles/:article_id
+/*
+(1)Task 12 and the Task 11 are  same endpoint.
+(2) Add the comment_count checking from Task 12
+*/
 describe ('GET /api/articles/:article_id',() => {
     test ('200:should return a single article by article_id',() => {
     return request(app)
@@ -62,7 +66,8 @@ describe ('GET /api/articles/:article_id',() => {
         expect(article).toHaveProperty("topic", expect.any(String));  
         expect(article).toHaveProperty("created_at");    
         expect(article).toHaveProperty("votes", expect.any(Number));   
-        expect(article).toHaveProperty("article_img_url", expect.any(String));   
+        expect(article).toHaveProperty("article_img_url", expect.any(String)); 
+        expect(article).toHaveProperty("comment_count", expect.any(Number));   
     })
   })
 

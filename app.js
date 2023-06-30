@@ -43,6 +43,8 @@ app.delete('/api/comments/:comment_id',deleteComment);
 
  //Task 11  CORE: GET /api/articles, the endpoint is same as Task 5
 
+//Task 12  CORE: GET /api/articles:article_id, the endpoint is same as Task 4
+
 
 //Error handle
 app.use(handlePsqlErrors);

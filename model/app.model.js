@@ -25,8 +25,15 @@ exports.selectAllTopics = () => {
 }
 
 //Task4 GET /api/articles/:article_id
+/*
+(1)Task 12 and the Task 11 are  same endpoint.
+(2)Modified the query statement to add the comment_count by article_id from comments table;
+*/
 exports.selectArticleByArticleId = (article_id) => {
-    const selectSQLStr = "SELECT * FROM articles WHERE article_id = $1 ;";
+    const selectSQLStr = "SELECT a.*, count(c.article_id) ::int AS comment_count " +
+                         "FROM articles a inner join comments c ON a.article_id = c.article_id " +
+                         "WHERE a.article_id = $1 " + 
+                         "GROUP BY a.article_id ;"
     return db
     .query(selectSQLStr,[article_id])
     .then(({rows}) => {
@@ -36,10 +43,10 @@ exports.selectArticleByArticleId = (article_id) => {
          return rows
     })
 }
-
+ 
 //Task 5 and Task 11 CORE: GET /api/articles
 /*
-Task 5 and the Task 11 is same endpoint.
+Task 5 and the Task 11 are same endpoint.
 So modified the Task 5 model function to match the Task 11
 (1)Accept the parameters and with its default value,keep the original test for Task 5 work as well
 (2)Valid the sort_by and order checking to avoid the SQL injection and return an error respond
