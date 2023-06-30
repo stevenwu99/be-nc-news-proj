@@ -77,7 +77,7 @@ exports.updateArticle = (req,res,next) => {
    const votes = req.body.inc_votes;
    updateArticleById(article_id,votes)
    .then ((article) => {
-      res.status(201).send({article:article[0]})
+      res.status(200).send({article:article[0]})
    })
    .catch (next);
 }

@@ -256,12 +256,12 @@ describe ('POST /api/articles/:article_id/comments',() => {
 
 //Task 8 PATCH /api/articles/:article_id
 describe ('PATCH /api/articles/:article_id',() => {
-    test ('201:should return a update article with correct vote when passed a positive vote number', () => {
+    test ('200:should return a update article with correct vote when passed a positive vote number', () => {
         const  newVote = {inc_votes:1};
         return request(app)
         .patch('/api/articles/1')
         .send(newVote)
-        .expect(201)
+        .expect(200)
         .then (({body}) => {
             const {article} = body;
             expect(article).toHaveProperty("author", expect.any(String));
@@ -275,12 +275,12 @@ describe ('PATCH /api/articles/:article_id',() => {
         })
     });
 
-    test ('201:should return a update article with correct vote when passed a negative vote number', () => {
+    test ('200:should return a update article with correct vote when passed a negative vote number', () => {
         const  newVote = {inc_votes:-100};
         return request(app)
         .patch('/api/articles/1')
         .send(newVote)
-        .expect(201)
+        .expect(200)
         .then (({body}) => {
             const {article} = body;
             expect(article).toHaveProperty("author", expect.any(String));
@@ -294,12 +294,12 @@ describe ('PATCH /api/articles/:article_id',() => {
         })
     });
 
-    test ('201:should return a update article with correct vote when passed a vote number with extra property', () => {
+    test ('200:should return a update article with correct vote when passed a vote number with extra property', () => {
         const  newVote = {inc_votes:-100,username:"Tom"};
         return request(app)
         .patch('/api/articles/1')
         .send(newVote)
-        .expect(201)
+        .expect(200)
         .then (({body}) => {
             const {article} = body;
             expect(article).toHaveProperty("author", expect.any(String));
