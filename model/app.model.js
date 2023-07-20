@@ -58,7 +58,7 @@ So modified the Task 5 model function to match the Task 11
         original test work
 */
 exports.selectAllArticles = (sort_by = 'created_at',order = 'DESC',topic) => {
-    const validSortBy = ['article_id','title','topic','author','created_at','votes','article_img_url'];
+    const validSortBy = ['article_id','title','topic','author','created_at','votes','article_img_url','comment_count'];
     const validSortOrder = ['ASC','DESC'];
     const queryValues = [];
   
@@ -79,8 +79,13 @@ exports.selectAllArticles = (sort_by = 'created_at',order = 'DESC',topic) => {
     }
   
     selectSQLStr +=  "GROUP BY a.article_id " ;
-    selectSQLStr += `ORDER By a.${sort_by} ${order} `;
-         
+    
+    if (sort_by === "comment_count") {
+        selectSQLStr += `ORDER By ${sort_by} ${order} `;
+    } else {
+        selectSQLStr += `ORDER By a.${sort_by} ${order} `;
+    }
+
     return db
         .query(selectSQLStr,queryValues)
         .then(({rows}) => {

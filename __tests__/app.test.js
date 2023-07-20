@@ -473,6 +473,18 @@ describe ("DELETE /api/comments/:comment_id", () => {
      expect(articles).toBeSortedBy("title",{ascending: true,});
     })
    })
+   
+   test ('200:accepts a sort_by query with sorts by title and ASC order)',() => {
+    return request(app)
+    .get("/api/articles?sort_by=comment_count&order=ASC")
+    .expect(200)
+    .then(({body}) =>{
+     const {articles} = body;
+     expect(articles).toHaveLength(5);
+     expect(articles).toBeSortedBy("comment_count",{ascending: true,});
+    })
+   })
+
      // Validate the sort_by to prevent SQL INJECTION
      test ('400:responds with bad request for an invalid sort_by',() => {
           return request(app)
